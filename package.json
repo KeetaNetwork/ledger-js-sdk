@@ -1,0 +1,47 @@
+{
+  "name": "@keeta/ledger-sdk",
+  "version": "0.1.0",
+  "description": "Keeta Network SDK for Ledger hardware wallets",
+  "license": "Apache-2.0",
+  "author": "Keeta Network",
+  "type": "module",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/types/index.d.ts",
+        "default": "./dist/esm/index.js"
+      },
+      "require": {
+        "types": "./dist/types/index.d.ts",
+        "default": "./dist/cjs/index.js"
+      }
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "npm run build:esm && npm run build:cjs && npm run build:types",
+    "build:esm": "esbuild src/index.ts --bundle --format=esm --platform=neutral --outfile=dist/esm/index.js --external:@ledgerhq/hw-transport --external:@keetanetwork/keetanet-client",
+    "build:cjs": "esbuild src/index.ts --bundle --format=cjs --platform=neutral --outfile=dist/cjs/index.js --external:@ledgerhq/hw-transport --external:@keetanetwork/keetanet-client",
+    "build:types": "tsc --emitDeclarationOnly --declaration --declarationDir dist/types",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "npm run clean && npm run build"
+  },
+  "peerDependencies": {
+    "@keetanetwork/keetanet-client": ">=1.0.0",
+    "@ledgerhq/hw-transport": "^6.0.0"
+  },
+  "devDependencies": {
+    "@keetanetwork/keetanet-client": "^0.14.14",
+    "@ledgerhq/hw-transport": "^6.31.0",
+    "@types/node": "^22.0.0",
+    "esbuild": "^0.21.0",
+    "typescript": "^5.5.0"
+  }
+}
