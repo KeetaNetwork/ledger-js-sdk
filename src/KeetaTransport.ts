@@ -3,6 +3,7 @@ import { CLA, INS, STATUS_WORD } from './constants.js';
 import { Algorithm, type TokenInfo } from './types.js';
 import { buildGetPublicKeyData, buildProvideTokenData } from './apdu/builder.js';
 import { createStreamChunks } from './apdu/chunker.js';
+import { domainSeparate } from './domain.js';
 import { UserCancelledError, TransportError } from './errors.js';
 
 /**
@@ -81,8 +82,24 @@ export class KeetaTransport {
     return this.streamSign(INS.SIGN_BLOCK, index, algorithm, data);
   }
 
-  async signMessage(index: number, algorithm: Algorithm, data: Uint8Array): Promise<Uint8Array> {
-    return this.streamSign(INS.SIGN_MESSAGE, index, algorithm, data);
+  /**
+   * Stream a message to SIGN_MESSAGE, optionally wrapping it with a
+   * domain separation tag via `domainSeparate`.
+   */
+  async signMessage(
+    index: number,
+    algorithm: Algorithm,
+    data: Uint8Array,
+    tag?: string | Uint8Array,
+  ): Promise<Uint8Array> {
+    let payload: Uint8Array;
+    if (tag !== undefined) {
+      payload = domainSeparate(tag, data);
+    } else {
+      payload = data;
+    }
+
+    return this.streamSign(INS.SIGN_MESSAGE, index, algorithm, payload);
   }
 
   async provideTokenInfo(info: TokenInfo): Promise<void> {

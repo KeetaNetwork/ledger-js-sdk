@@ -73,12 +73,29 @@ export class KeetaLedger {
     return parseSignature(response);
   }
 
+  /**
+   * Sign an arbitrary message, optionally with a user-defined domain
+   * separation tag.
+   *
+   * When `tag` is provided, the signed payload is transformed to
+   * `[0x19][tag_len:1B][tag][message]` before being streamed to the
+   * device. This prevents cross-context signature reuse between
+   * applications that share a key but use different tags.
+   *
+   * Verifier contract: To verify a signature produced with a tag, the
+   * verifier MUST reconstruct the same bytes via the exported
+   * `domainSeparate(tag, message)` function before calling its
+   * verification routine.
+   *
+   * Tag length MUST be 1-255 bytes.
+   */
   async signMessage(
     index: number,
     message: Uint8Array,
     algorithm: Algorithm = Algorithm.Secp256k1,
+    tag?: string | Uint8Array,
   ): Promise<Signature> {
-    const response = await this.transport.signMessage(index, algorithm, message);
+    const response = await this.transport.signMessage(index, algorithm, message, tag);
     return parseSignature(response);
   }
 

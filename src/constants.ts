@@ -22,6 +22,15 @@ export const TOKEN_ADDRESS_SIZE = 33;
 /** Maximum token symbol length. */
 export const MAX_SYMBOL_LENGTH = 8;
 
+/**
+ * Magic byte that prefixes a domain-separated signMessage payload.
+ * Matches EIP-191's signed-data escape convention.
+ */
+export const DOMAIN_SEPARATION_MAGIC_BYTE = 0x19;
+
+/** Maximum domain separation tag length in bytes. */
+export const MAX_TAG_LENGTH = 255;
+
 /** Ledger status words. */
 export const STATUS_WORD = {
   OK: 0x9000,
