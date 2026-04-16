@@ -87,7 +87,9 @@ export class KeetaLedger {
    * `domainSeparate(tag, message)` function before calling its
    * verification routine.
    *
-   * Tag length MUST be 1-255 bytes.
+   * Tag length MUST be 1-`MAX_TAG_LENGTH` bytes. If `tag` is a string,
+   * this limit applies to the UTF-8 encoded tag bytes, not the string's
+   * character count.
    */
   async signMessage(
     index: number,

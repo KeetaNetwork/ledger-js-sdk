@@ -7,7 +7,7 @@ import { ValidationError } from './errors.js';
  * String tags are UTF-8 encoded; Uint8Array tags are used verbatim.
  * See `KeetaLedger.signMessage` for the full signing/verification contract.
  *
- * @throws ValidationError if the encoded tag is empty or longer than 255 bytes.
+ * @throws ValidationError if the encoded tag is empty or longer than `MAX_TAG_LENGTH` bytes.
  */
 export function domainSeparate(
   tag: string | Uint8Array,
