@@ -1,9 +1,9 @@
 import type Transport from '@ledgerhq/hw-transport';
+import { lib } from '@keetanetwork/keetanet-client';
 import { CLA, INS, STATUS_WORD } from './constants.js';
 import { Algorithm, type TokenInfo } from './types.js';
 import { buildGetPublicKeyData, buildProvideTokenData } from './apdu/builder.js';
 import { createStreamChunks } from './apdu/chunker.js';
-import { domainSeparate } from './domain.js';
 import { UserCancelledError, TransportError } from './errors.js';
 
 /**
@@ -84,17 +84,17 @@ export class KeetaTransport {
 
   /**
    * Stream a message to SIGN_MESSAGE, optionally wrapping it with a
-   * domain separation tag via `domainSeparate`.
+   * domain-separation namespace.
    */
   async signMessage(
     index: number,
     algorithm: Algorithm,
     data: Uint8Array,
-    tag?: string | Uint8Array,
+    namespace?: string | ArrayBuffer,
   ): Promise<Uint8Array> {
     let payload: Uint8Array;
-    if (tag !== undefined) {
-      payload = domainSeparate(tag, data);
+    if (namespace !== undefined) {
+      payload = new Uint8Array(lib.Utils.DomainSeparation.applyNamespace(namespace, data.buffer as ArrayBuffer));
     } else {
       payload = data;
     }

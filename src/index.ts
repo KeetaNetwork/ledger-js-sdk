@@ -18,6 +18,4 @@ export {
   ValidationError,
 } from './errors.js';
 
-export { CLA, INS, STATUS_WORD, DOMAIN_SEPARATION_MAGIC_BYTE, MAX_TAG_LENGTH } from './constants.js';
-
-export { domainSeparate } from './domain.js';
+export { CLA, INS, STATUS_WORD } from './constants.js';

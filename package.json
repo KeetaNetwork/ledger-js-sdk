@@ -33,15 +33,15 @@
     "clean": "rm -rf dist .coverage",
     "tsc": "tsc",
     "vitest": "vitest",
-    "test": "tsc --noEmit && vitest run --config ./.vitest.config.js",
+    "test": "tsc --noEmit && vitest run --passWithNoTests --config ./.vitest.config.js",
     "prepublishOnly": "npm run clean && npm run build"
   },
   "peerDependencies": {
-    "@keetanetwork/keetanet-client": ">=1.0.0",
+    "@keetanetwork/keetanet-client": ">=0.16.2",
     "@ledgerhq/hw-transport": "^6.0.0"
   },
   "devDependencies": {
-    "@keetanetwork/keetanet-client": "^0.14.14",
+    "@keetanetwork/keetanet-client": "0.16.2",
     "@ledgerhq/hw-transport": "^6.31.0",
     "@types/node": "^22.0.0",
     "@vitest/coverage-v8": "3.2.4",
