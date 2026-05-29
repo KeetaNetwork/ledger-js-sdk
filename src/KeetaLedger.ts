@@ -73,12 +73,19 @@ export class KeetaLedger {
     return parseSignature(response);
   }
 
+  /**
+   * Sign an arbitrary message via the Ledger, optionally domain-separated
+   * by `namespace`. Verifier MUST pass the same `namespace` to
+   * `Account.verify(...)`. String namespaces are UTF-8 encoded; max
+   * `MaxNamespaceLength` bytes.
+   */
   async signMessage(
     index: number,
     message: Uint8Array,
     algorithm: Algorithm = Algorithm.Secp256k1,
+    namespace?: string | ArrayBuffer,
   ): Promise<Signature> {
-    const response = await this.transport.signMessage(index, algorithm, message);
+    const response = await this.transport.signMessage(index, algorithm, message, namespace);
     return parseSignature(response);
   }
 
@@ -103,6 +110,31 @@ export class KeetaLedger {
     index: number,
     algorithm: Algorithm = Algorithm.Secp256k1,
   ): Promise<InstanceType<typeof Account>> {
+    return this.externalKeyPairAccount(index, algorithm, (data) =>
+      this.signBlock(index, data, algorithm),
+    );
+  }
+
+  /**
+   * Like `getAccount`, but the returned Account's `.sign(data, options?)`
+   * routes through SIGN_MESSAGE instead of SIGN_BLOCK. Use this for
+   * arbitrary-message signing, including namespaced signing via
+   * `account.sign(data, { namespace })`.
+   */
+  async getMessageAccount(
+    index: number,
+    algorithm: Algorithm = Algorithm.Secp256k1,
+  ): Promise<InstanceType<typeof Account>> {
+    return this.externalKeyPairAccount(index, algorithm, (data) =>
+      this.signMessage(index, data, algorithm),
+    );
+  }
+
+  private async externalKeyPairAccount(
+    index: number,
+    algorithm: Algorithm,
+    signFn: (data: Uint8Array) => Promise<Signature>,
+  ): Promise<InstanceType<typeof Account>> {
     const { publicKey } = await this.getPublicKeyAndAddress(index, algorithm);
 
     const keyType = algorithm as number as AccountKeyAlgorithm;
@@ -113,7 +145,7 @@ export class KeetaLedger {
       {
         supportsEncryption: false,
         sign: async (data: ArrayBuffer) => {
-          const sig = await this.signBlock(index, new Uint8Array(data), algorithm);
+          const sig = await signFn(new Uint8Array(data));
           const sigBuffer = new ArrayBuffer(sig.raw.byteLength);
           new Uint8Array(sigBuffer).set(sig.raw);
           return new BufferStorage(sigBuffer, sig.raw.length);

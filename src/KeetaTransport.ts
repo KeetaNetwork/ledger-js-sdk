@@ -1,4 +1,5 @@
 import type Transport from '@ledgerhq/hw-transport';
+import { lib } from '@keetanetwork/keetanet-client';
 import { CLA, INS, STATUS_WORD } from './constants.js';
 import { Algorithm, type TokenInfo } from './types.js';
 import { buildGetPublicKeyData, buildProvideTokenData } from './apdu/builder.js';
@@ -81,8 +82,24 @@ export class KeetaTransport {
     return this.streamSign(INS.SIGN_BLOCK, index, algorithm, data);
   }
 
-  async signMessage(index: number, algorithm: Algorithm, data: Uint8Array): Promise<Uint8Array> {
-    return this.streamSign(INS.SIGN_MESSAGE, index, algorithm, data);
+  /**
+   * Stream a message to SIGN_MESSAGE, optionally wrapping it with a
+   * domain-separation namespace.
+   */
+  async signMessage(
+    index: number,
+    algorithm: Algorithm,
+    data: Uint8Array,
+    namespace?: string | ArrayBuffer,
+  ): Promise<Uint8Array> {
+    let payload: Uint8Array;
+    if (namespace !== undefined) {
+      payload = new Uint8Array(lib.Utils.DomainSeparation.applyNamespace(namespace, data.buffer as ArrayBuffer));
+    } else {
+      payload = data;
+    }
+
+    return this.streamSign(INS.SIGN_MESSAGE, index, algorithm, payload);
   }
 
   async provideTokenInfo(info: TokenInfo): Promise<void> {
