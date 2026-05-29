@@ -1,5 +1,5 @@
 {
-  "name": "@keeta/ledger-sdk",
+  "name": "@keetanetwork/ledger-sdk",
   "version": "0.1.0",
   "description": "Keeta Network SDK for Ledger hardware wallets",
   "license": "Apache-2.0",
@@ -26,22 +26,28 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "npm run build:esm && npm run build:cjs && npm run build:types",
-    "build:esm": "esbuild src/index.ts --bundle --format=esm --platform=neutral --outfile=dist/esm/index.js --external:@ledgerhq/hw-transport --external:@keetanetwork/keetanet-client",
-    "build:cjs": "esbuild src/index.ts --bundle --format=cjs --platform=neutral --outfile=dist/cjs/index.js --external:@ledgerhq/hw-transport --external:@keetanetwork/keetanet-client",
-    "build:types": "tsc --project tsconfig.build.json --emitDeclarationOnly --declaration --declarationDir dist/types",
-    "clean": "rm -rf dist .coverage",
+    "eslint": "eslint",
     "tsc": "tsc",
     "vitest": "vitest",
-    "test": "tsc --noEmit && vitest run --passWithNoTests --config ./.vitest.config.js",
-    "prepublishOnly": "npm run clean && npm run build"
+    "esbuild-esm": "esbuild src/index.ts --bundle --format=esm --platform=neutral --outfile=dist/esm/index.js --external:@ledgerhq/hw-transport --external:@keetanetwork/keetanet-client",
+    "esbuild-cjs": "esbuild src/index.ts --bundle --format=cjs --platform=neutral --outfile=dist/cjs/index.js --external:@ledgerhq/hw-transport --external:@keetanetwork/keetanet-client",
+    "build": "make dist",
+    "test": "make test",
+    "make:all": "make all",
+    "make:dist": "make dist",
+    "make:do-lint": "make do-lint",
+    "make:test": "make test",
+    "make:clean": "make clean",
+    "make:distclean": "make distclean",
+    "make:do-npm-pack": "make do-npm-pack"
   },
   "peerDependencies": {
     "@keetanetwork/keetanet-client": ">=0.16.2",
     "@ledgerhq/hw-transport": "^6.0.0"
   },
   "devDependencies": {
-    "@keetanetwork/keetanet-client": "0.16.2",
+    "@keetanetwork/eslint-config-typescript": "1.4.7",
+    "@keetanetwork/keetanet-client": "^0.18.1",
     "@ledgerhq/hw-transport": "^6.31.0",
     "@types/node": "^22.0.0",
     "@vitest/coverage-v8": "3.2.4",
