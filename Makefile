@@ -57,7 +57,7 @@ dist: dist/.done
 # package for this project.
 do-npm-pack: dist node_modules Makefile
 	cd dist && npm pack
-	mv dist/keeta-ledger-sdk-*.tgz .
+	mv dist/keetanetwork-ledger-sdk-*.tgz .
 
 # This is a synthetic target that runs this test suite.
 test: node_modules
@@ -78,7 +78,7 @@ clean:
 	rm -rf dist
 	rm -rf .coverage
 	rm -f .tsbuildinfo
-	rm -f keeta-ledger-sdk-*.tgz
+	rm -f keetanetwork-ledger-sdk-*.tgz
 
 # Files created during the "install" process are cleaned up
 # by the "distclean" target.

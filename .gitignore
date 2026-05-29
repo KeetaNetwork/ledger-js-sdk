@@ -3,4 +3,4 @@
 /.coverage
 /*.tsbuildinfo
 /.nvmrc
-/keeta-ledger-sdk-*.tgz
+/keetanetwork-ledger-sdk-*.tgz

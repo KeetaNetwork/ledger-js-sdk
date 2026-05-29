@@ -1,5 +1,5 @@
 {
-  "name": "@keeta/ledger-sdk",
+  "name": "@keetanetwork/ledger-sdk",
   "version": "0.1.0",
   "description": "Keeta Network SDK for Ledger hardware wallets",
   "license": "Apache-2.0",
