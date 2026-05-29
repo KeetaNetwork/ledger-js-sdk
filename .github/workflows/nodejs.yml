@@ -32,26 +32,19 @@ jobs:
           node-version: '${{ steps.node_version.outputs.NODE_VERSION }}'
           cache: 'npm'
 
-      - name: Setup NPM Auth for GitHub Package Registry
-        run: echo '//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}' >> ~/.npmrc
-
       - name: Run Lint
         run: make do-lint
-        env:
-          # Needed to fetch packages from GitHub Package Registry
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run Build
+        run: make dist
 
       - name: Run Tests
         run: make test
-        env:
-          # Needed to fetch packages from GitHub Package Registry
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # Run SonarCloud after completing tests and generating code coverage report
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@v6.0.0
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           args: >

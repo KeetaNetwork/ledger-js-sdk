@@ -1,8 +1,7 @@
 import type Transport from '@ledgerhq/hw-transport';
 import { lib } from '@keetanetwork/keetanet-client';
 import { CLA, INS, STATUS_WORD } from './constants.js';
-import type { Algorithm } from './types.js';
-import { type TokenInfo } from './types.js';
+import type { Algorithm, TokenInfo } from './types.js';
 import { buildGetPublicKeyData, buildProvideTokenData } from './apdu/builder.js';
 import { createStreamChunks } from './apdu/chunker.js';
 import { UserCancelledError, TransportError } from './errors.js';

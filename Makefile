@@ -39,12 +39,14 @@ node_modules: node_modules/.done
 	@touch node_modules
 
 # This target creates the distribution directory.
-dist/.done: $(shell find src -type f) node_modules Makefile tsconfig.json tsconfig.build.json
+dist/.done: $(shell find src -type f) node_modules Makefile tsconfig.json tsconfig.build.json package.json
 	npm run tsc -- --project tsconfig.build.json --emitDeclarationOnly --declaration --declarationDir dist/types
 	npm run esbuild-esm
 	npm run esbuild-cjs
 	find dist -type f -name '*.test.*' | xargs rm -f
 	test -e LICENSE && cp LICENSE dist/ || :
+	cp package.json dist/
+	test -e README.md && cp README.md dist/ || :
 	@touch dist/.done
 
 # Creates the distribution directory -- this target is for
