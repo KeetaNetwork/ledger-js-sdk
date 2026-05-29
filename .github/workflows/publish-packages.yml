@@ -86,6 +86,11 @@ jobs:
 
       - name: Publish to GitHub Package Registry
         run: |
+          # Create .npmrc for authentication
+          echo '//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}' > .npmrc
+          echo '@keetanetwork:registry=https://npm.pkg.github.com' >> .npmrc
+
+          # Publish ledger-sdk package tarball
           npm publish ./keetanetwork-ledger-sdk-*.tgz
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
