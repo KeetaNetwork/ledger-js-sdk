@@ -45,7 +45,8 @@ dist/.done: $(shell find src -type f) node_modules Makefile tsconfig.json tsconf
 	npm run esbuild-cjs
 	find dist -type f -name '*.test.*' | xargs rm -f
 	test -e LICENSE && cp LICENSE dist/ || :
-	cp package.json dist/
+	sed 's@/dist@@g' < package.json | jq 'del(.devDependencies, .scripts, .engines) | .files = ["cjs", "esm", "types", "package.json"]' > dist/package.json.new
+	jq --tab . < dist/package.json.new > dist/package.json
 	test -e README.md && cp README.md dist/ || :
 	@touch dist/.done
 
