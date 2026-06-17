@@ -154,8 +154,15 @@ export class KeetaLedger {
 		const externalKeyPair = new Account.ExternalKeyPair(
 			{
 				supportsEncryption: false,
-				sign: async (data: ArrayBuffer) => {
-					const sig = await signFn(new Uint8Array(data));
+				sign: async (data: ArrayBuffer, options?: { ancillaryData?: ArrayBuffer }) => {
+					// When Block.seal() calls sign(), `data` is the 32-byte
+					// block hash and `options.ancillaryData` contains the full
+					// serialized block.  The device needs the full block to
+					// compute the hash itself and to enable clear-signing.
+					const payload = options?.ancillaryData
+						? new Uint8Array(options.ancillaryData)
+						: new Uint8Array(data);
+					const sig = await signFn(payload);
 					const sigBuffer = new ArrayBuffer(sig.raw.byteLength);
 					new Uint8Array(sigBuffer).set(sig.raw);
 					return(new BufferStorage(sigBuffer, sig.raw.length));

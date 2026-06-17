@@ -32,7 +32,11 @@ export class KeetaTransport {
 		try {
 			const buf = data ? Buffer.from(data) : Buffer.alloc(0);
 			const response = await this.transport.send(CLA, ins, p1, p2, buf);
-			return(new Uint8Array(response));
+			// @ledgerhq/hw-transport.send() appends a 2-byte status word
+			// (e.g. 0x9000) to every response.  Strip it so downstream
+			// parsers see only the payload (e.g. 64-byte raw signature).
+			const raw = new Uint8Array(response);
+			return(raw.length >= 2 ? raw.subarray(0, raw.length - 2) : raw);
 		} catch (error: unknown) {
 			if (isErrorWithStatusCode(error)) {
 				const sw = error.statusCode;
